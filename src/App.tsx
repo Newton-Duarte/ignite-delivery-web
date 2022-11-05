@@ -1,3 +1,10 @@
+import { BrowserRouter } from 'react-router-dom'
+import { Router } from './Router'
+
 export function App() {
-  return <div className="App">hello my friend</div>
+  return (
+    <BrowserRouter>
+      <Router />
+    </BrowserRouter>
+  )
 }
