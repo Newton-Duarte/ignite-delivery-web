@@ -1,16 +1,22 @@
+import { useState } from 'react'
+import { NavLink } from 'react-router-dom'
 import {
   Box,
   Button,
   Container,
   Divider,
   FormControl,
+  IconButton,
+  InputAdornment,
   Paper,
   TextField,
   Typography,
 } from '@mui/material'
-import { NavLink } from 'react-router-dom'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 
 export default function Login() {
+  const [showPassword, setShowPassword] = useState(false)
   return (
     <Container
       maxWidth="xl"
@@ -43,7 +49,28 @@ export default function Login() {
             <TextField id="email" type="email" label="E-mail" />
           </FormControl>
           <FormControl fullWidth>
-            <TextField id="password" type="password" label="Senha" />
+            <TextField
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              label="Senha"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? (
+                        <VisibilityOffIcon />
+                      ) : (
+                        <VisibilityIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
           </FormControl>
           <FormControl fullWidth>
             <Button variant="contained" size="large">
