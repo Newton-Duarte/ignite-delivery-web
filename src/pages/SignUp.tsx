@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { NavLink } from 'react-router-dom'
 import {
   Box,
   Button,
@@ -5,6 +7,8 @@ import {
   Divider,
   FormControl,
   FormControlLabel,
+  IconButton,
+  InputAdornment,
   Paper,
   Radio,
   RadioGroup,
@@ -12,9 +16,12 @@ import {
   Typography,
 } from '@mui/material'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-import { NavLink } from 'react-router-dom'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 
 export default function SignUp() {
+  const [showPassword, setShowPassword] = useState(false)
+
   return (
     <Container
       maxWidth="xl"
@@ -64,7 +71,28 @@ export default function SignUp() {
             <TextField id="email" type="email" label="E-mail" />
           </FormControl>
           <FormControl fullWidth>
-            <TextField id="password" type="password" label="Senha" />
+            <TextField
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              label="Senha"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? (
+                        <VisibilityOffIcon />
+                      ) : (
+                        <VisibilityIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
           </FormControl>
           <FormControl fullWidth>
             <Button variant="contained" size="large">
