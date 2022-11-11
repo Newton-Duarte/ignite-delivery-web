@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
 import {
   Box,
   Button,
@@ -21,6 +22,12 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false)
+
+  const { register, handleSubmit } = useForm()
+
+  const handleCreateUser = (data: any) => {
+    console.log(data)
+  }
 
   return (
     <Container
@@ -46,6 +53,7 @@ export default function SignUp() {
         </Typography>
         <Box
           component="form"
+          onSubmit={handleSubmit(handleCreateUser)}
           sx={{
             '& .MuiTextField-root, & .MuiFormGroup-root': { mb: 3 },
           }}
@@ -53,6 +61,7 @@ export default function SignUp() {
           <FormControl fullWidth sx={{ alignItems: 'center' }}>
             <RadioGroup name="user-type" aria-labelledby="user-type" row>
               <FormControlLabel
+                {...register('client')}
                 control={<Radio />}
                 label="Cliente"
                 value="client"
@@ -65,13 +74,24 @@ export default function SignUp() {
             </RadioGroup>
           </FormControl>
           <FormControl fullWidth>
-            <TextField id="name" type="text" label="Nome" />
-          </FormControl>
-          <FormControl fullWidth>
-            <TextField id="email" type="email" label="E-mail" />
+            <TextField
+              {...register('name')}
+              id="name"
+              type="text"
+              label="Nome"
+            />
           </FormControl>
           <FormControl fullWidth>
             <TextField
+              {...register('email')}
+              id="email"
+              type="email"
+              label="E-mail"
+            />
+          </FormControl>
+          <FormControl fullWidth>
+            <TextField
+              {...register('password')}
               id="password"
               type={showPassword ? 'text' : 'password'}
               label="Senha"
@@ -95,7 +115,7 @@ export default function SignUp() {
             />
           </FormControl>
           <FormControl fullWidth>
-            <Button variant="contained" size="large">
+            <Button type="submit" variant="contained" size="large">
               Salvar
             </Button>
             <Divider sx={{ my: 3 }} />
