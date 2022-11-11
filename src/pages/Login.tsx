@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
 import {
   Box,
   Button,
@@ -17,6 +18,13 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
+
+  const { register, handleSubmit } = useForm()
+
+  const handleLogin = (data: any) => {
+    console.log(data)
+  }
+
   return (
     <Container
       maxWidth="xl"
@@ -41,15 +49,22 @@ export default function Login() {
         </Typography>
         <Box
           component="form"
+          onSubmit={handleSubmit(handleLogin)}
           sx={{
             '& .MuiTextField-root': { mb: 3 },
           }}
         >
           <FormControl fullWidth>
-            <TextField id="email" type="email" label="E-mail" />
+            <TextField
+              {...register('email')}
+              id="email"
+              type="email"
+              label="E-mail"
+            />
           </FormControl>
           <FormControl fullWidth>
             <TextField
+              {...register('password')}
               id="password"
               type={showPassword ? 'text' : 'password'}
               label="Senha"
@@ -73,7 +88,7 @@ export default function Login() {
             />
           </FormControl>
           <FormControl fullWidth>
-            <Button variant="contained" size="large">
+            <Button type="submit" variant="contained" size="large">
               Entrar
             </Button>
             <Divider sx={{ my: 3 }} />
