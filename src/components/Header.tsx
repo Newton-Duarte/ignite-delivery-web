@@ -64,7 +64,7 @@ export function Header() {
           </Typography>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title="Meu perfil">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Newton Duarte" src="/static/images/avatar/2.jpg" />
               </IconButton>
