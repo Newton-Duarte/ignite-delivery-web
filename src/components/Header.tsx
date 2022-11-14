@@ -13,8 +13,6 @@ import {
   Typography,
 } from '@mui/material'
 
-const settings = ['Perfil', 'Minhas Entregas', 'Logout']
-
 export function Header() {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
 
@@ -70,7 +68,7 @@ export function Header() {
               </IconButton>
             </Tooltip>
             <Menu
-              sx={{ mt: '45px' }}
+              sx={{ mt: '45px', '.MuiMenu-list': { py: 0 } }}
               id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
@@ -85,11 +83,22 @@ export function Header() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem
+                component={NavLink}
+                to="/user/profile"
+                onClick={handleCloseUserMenu}
+                sx={{ py: 1.5 }}
+              >
+                <Typography textAlign="center">Profile</Typography>
+              </MenuItem>
+              <MenuItem
+                component={NavLink}
+                to="/user/deliveries"
+                onClick={handleCloseUserMenu}
+                sx={{ py: 1.5 }}
+              >
+                <Typography textAlign="center">Minhas Entregas</Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>
