@@ -57,7 +57,7 @@ export function Home() {
                 <TableRow key={n}>
                   <TableCell>John Doe</TableCell>
                   <TableCell>Coxinha</TableCell>
-                  <TableCell>Rua Ali Perto, 123 - Barrio Cidade/ST</TableCell>
+                  <TableCell>Rua Ali Perto, 123 - Bairro Cidade/ST</TableCell>
                   <TableCell>
                     <Button variant="contained">Realizar Entrega</Button>
                   </TableCell>
