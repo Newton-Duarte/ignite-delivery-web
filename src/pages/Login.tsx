@@ -15,14 +15,17 @@ import {
 } from '@mui/material'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import { useAuth } from '../contexts/AuthContext'
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
 
   const { register, handleSubmit } = useForm()
 
+  const { signIn } = useAuth()
+
   const handleLogin = (data: any) => {
-    console.log(data)
+    signIn(data.email, data.password)
   }
 
   return (
@@ -93,7 +96,7 @@ export default function Login() {
             </Button>
             <Divider sx={{ my: 3 }} />
             <Button component={NavLink} to="/sign-up" size="large">
-              Fazer cadastro
+              Criar uma conta
             </Button>
           </FormControl>
         </Box>
