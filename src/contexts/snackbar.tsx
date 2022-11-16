@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, ReactNode, useContext, useState } from 'react'
 
 interface SnackbarContextData {
   showSnackbarMessage(message: string): void
@@ -15,7 +15,11 @@ export function useSnackbar(): SnackbarContextData {
   return context
 }
 
-export const SnackbarProvider = ({ children }: { children: any }) => {
+interface SnackbarProviderProps {
+  children: ReactNode
+}
+
+export const SnackbarProvider = ({ children }: SnackbarProviderProps) => {
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
 
