@@ -4,6 +4,7 @@ import {
   AppBar,
   Avatar,
   Box,
+  Button,
   Container,
   IconButton,
   Menu,
@@ -12,9 +13,12 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
+import { useAuth } from '../contexts/AuthContext'
 
 export function Header() {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
+
+  const { user } = useAuth()
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget)
@@ -61,46 +65,63 @@ export function Header() {
             Ignite Deliveries
           </Typography>
 
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Meu perfil">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Newton Duarte" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px', '.MuiMenu-list': { py: 0 } }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              <MenuItem
-                component={NavLink}
-                to="/user/profile"
-                onClick={handleCloseUserMenu}
-                sx={{ py: 1.5 }}
+          {user?.id ? (
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Meu perfil">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar
+                    alt="Newton Duarte"
+                    src="/static/images/avatar/2.jpg"
+                  />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: '45px', '.MuiMenu-list': { py: 0 } }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
               >
-                <Typography textAlign="center">Profile</Typography>
-              </MenuItem>
-              <MenuItem
+                <MenuItem
+                  component={NavLink}
+                  to="/user/profile"
+                  onClick={handleCloseUserMenu}
+                  sx={{ py: 1.5 }}
+                >
+                  <Typography textAlign="center">Profile</Typography>
+                </MenuItem>
+                <MenuItem
+                  component={NavLink}
+                  to="/user/deliveries"
+                  onClick={handleCloseUserMenu}
+                  sx={{ py: 1.5 }}
+                >
+                  <Typography textAlign="center">Minhas Entregas</Typography>
+                </MenuItem>
+              </Menu>
+            </Box>
+          ) : (
+            <Box>
+              <Button
+                size="large"
+                variant="text"
+                sx={{ color: 'inherit ' }}
                 component={NavLink}
-                to="/user/deliveries"
-                onClick={handleCloseUserMenu}
-                sx={{ py: 1.5 }}
+                to="/login"
               >
-                <Typography textAlign="center">Minhas Entregas</Typography>
-              </MenuItem>
-            </Menu>
-          </Box>
+                Login
+              </Button>
+            </Box>
+          )}
         </Toolbar>
       </Container>
     </AppBar>
