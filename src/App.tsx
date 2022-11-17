@@ -8,14 +8,14 @@ const theme = createTheme()
 
 export function App() {
   return (
-    <AuthProvider>
+    <BrowserRouter>
       <SnackbarProvider>
-        <ThemeProvider theme={theme}>
-          <BrowserRouter>
+        <AuthProvider>
+          <ThemeProvider theme={theme}>
             <Router />
-          </BrowserRouter>
-        </ThemeProvider>
+          </ThemeProvider>
+        </AuthProvider>
       </SnackbarProvider>
-    </AuthProvider>
+    </BrowserRouter>
   )
 }
