@@ -65,7 +65,7 @@ export function Header() {
             Ignite Deliveries
           </Typography>
 
-          {user?.id ? (
+          {user ? (
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Meu perfil">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
