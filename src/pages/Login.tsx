@@ -25,7 +25,7 @@ export default function Login() {
   const { signIn } = useAuth()
 
   const handleLogin = (data: any) => {
-    signIn(data.email, data.password)
+    signIn(data.username, data.password)
   }
 
   return (
@@ -59,10 +59,10 @@ export default function Login() {
         >
           <FormControl fullWidth>
             <TextField
-              {...register('email')}
-              id="email"
-              type="email"
-              label="E-mail"
+              {...register('username')}
+              id="username"
+              type="text"
+              label="Usuário"
             />
           </FormControl>
           <FormControl fullWidth>
