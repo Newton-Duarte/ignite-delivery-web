@@ -1,31 +1,17 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
-import {
-  Box,
-  Button,
-  Container,
-  Divider,
-  FormControl,
-  IconButton,
-  InputAdornment,
-  Paper,
-  TextField,
-  Typography,
-} from '@mui/material'
-import VisibilityIcon from '@mui/icons-material/Visibility'
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import { Container, IconButton, Paper, Stack, Typography } from '@mui/material'
 import { useAuth } from '../contexts/AuthContext'
+import deliverymanSvg from '../assets/undraw_delivery_truck.svg'
+import customerSvg from '../assets/undraw_delivery.svg'
+import LoginForm from '../components/LoginForm'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 export default function Login() {
-  const [showPassword, setShowPassword] = useState(false)
-
-  const { register, handleSubmit } = useForm()
-
+  const [loginType, setLoginType] = useState('')
   const { signIn } = useAuth()
 
   const handleLogin = (data: any) => {
-    signIn(data.username, data.password)
+    signIn(loginType, data.username, data.password)
   }
 
   return (
@@ -38,69 +24,92 @@ export default function Login() {
         justifyContent: 'center',
       }}
     >
-      <Paper
-        sx={{
-          width: {
-            xs: '100%',
-            sm: 400,
-          },
-          p: 3,
-        }}
-      >
-        <Typography variant="h5" sx={{ mb: 4, textAlign: 'center' }}>
-          Ignite Deliveries - Login
-        </Typography>
-        <Box
-          component="form"
-          onSubmit={handleSubmit(handleLogin)}
+      {loginType ? (
+        <Paper
           sx={{
-            '& .MuiTextField-root': { mb: 3 },
+            width: {
+              xs: '100%',
+              md: 400,
+            },
+            p: 3,
           }}
         >
-          <FormControl fullWidth>
-            <TextField
-              {...register('username')}
-              id="username"
-              type="text"
-              label="Usuário"
-            />
-          </FormControl>
-          <FormControl fullWidth>
-            <TextField
-              {...register('password')}
-              id="password"
-              type={showPassword ? 'text' : 'password'}
-              label="Senha"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge="end"
-                    >
-                      {showPassword ? (
-                        <VisibilityOffIcon />
-                      ) : (
-                        <VisibilityIcon />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+          <Stack
+            direction="row"
+            mb={4}
+            alignItems="center"
+            justifyContent="center"
+            sx={{
+              position: 'relative',
+            }}
+          >
+            <IconButton
+              onClick={() => setLoginType('')}
+              sx={{
+                position: 'absolute',
+                left: 0,
               }}
-            />
-          </FormControl>
-          <FormControl fullWidth>
-            <Button type="submit" variant="contained" size="large">
-              Entrar
-            </Button>
-            <Divider sx={{ my: 3 }} />
-            <Button component={NavLink} to="/sign-up" size="large">
-              Criar uma conta
-            </Button>
-          </FormControl>
-        </Box>
-      </Paper>
+            >
+              <ArrowBackIcon />
+            </IconButton>
+            <Typography variant="h5">
+              Login {loginType === 'customer' ? 'Cliente' : 'Entregador'}
+            </Typography>
+          </Stack>
+          <LoginForm onSubmit={handleLogin} />
+        </Paper>
+      ) : (
+        <Stack
+          direction={{
+            sx: 'column',
+            md: 'row',
+          }}
+          spacing={2}
+        >
+          <Paper
+            sx={{
+              width: {
+                xs: '100%',
+                md: 400,
+              },
+              p: 3,
+              mb: {
+                xs: 2,
+                md: 0,
+              },
+              cursor: 'pointer',
+              '&:hover': {
+                boxShadow: 8,
+              },
+            }}
+            onClick={() => setLoginType('customer')}
+          >
+            <Typography variant="h5" sx={{ mb: 4, textAlign: 'center' }}>
+              Login Cliente
+            </Typography>
+            <img src={customerSvg} alt="" style={{ maxWidth: '100%' }} />
+          </Paper>
+          <Paper
+            sx={{
+              width: {
+                xs: '100%',
+                md: 400,
+              },
+              p: 3,
+              cursor: 'pointer',
+              '&:hover': {
+                boxShadow: 8,
+              },
+            }}
+            onClick={() => setLoginType('deliveryman')}
+          >
+            <Typography variant="h5" sx={{ mb: 4, textAlign: 'center' }}>
+              Login Entregador
+            </Typography>
+            <img src={deliverymanSvg} alt="" style={{ maxWidth: '100%' }} />
+          </Paper>
+        </Stack>
+      )}
     </Container>
   )
 }
