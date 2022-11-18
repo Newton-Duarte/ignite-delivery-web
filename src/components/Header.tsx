@@ -18,7 +18,7 @@ import { useAuth } from '../contexts/AuthContext'
 export function Header() {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
 
-  const { user } = useAuth()
+  const { user, signOut } = useAuth()
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget)
@@ -26,6 +26,11 @@ export function Header() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null)
+  }
+
+  const handleLogout = () => {
+    setAnchorElUser(null)
+    signOut()
   }
 
   return (
@@ -106,6 +111,9 @@ export function Header() {
                   sx={{ py: 1.5 }}
                 >
                   <Typography textAlign="center">Minhas Entregas</Typography>
+                </MenuItem>
+                <MenuItem onClick={handleLogout} sx={{ py: 1.5 }}>
+                  <Typography textAlign="center">Sair</Typography>
                 </MenuItem>
               </Menu>
             </Box>
