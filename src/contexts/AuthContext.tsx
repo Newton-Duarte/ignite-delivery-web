@@ -10,8 +10,8 @@ import { useNavigate } from 'react-router-dom'
 import { api } from '../services/api'
 import { useSnackbar } from './snackbar'
 
-const LOCALSTORAGE_USER_KEY = 'ignitedelivery.user'
-const LOCALSTORAGE_TOKEN_KEY = 'ignitedelivery.token'
+const LOCAL_STORAGE_USER_KEY = 'ignitedelivery.user'
+const LOCAL_STORAGE_TOKEN_KEY = 'ignitedelivery.token'
 
 interface User {
   id: string
@@ -27,7 +27,7 @@ type SignInResponse = {
 
 interface AuthContextData {
   user: User | undefined
-  signIn: (username: string, password: string) => void
+  signIn: (loginType: string, username: string, password: string) => void
   isAuthenticated: boolean
 }
 
@@ -51,7 +51,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const { showSnackbarMessage } = useSnackbar()
 
   useEffect(() => {
-    const token = localStorage.getItem(LOCALSTORAGE_TOKEN_KEY)
+    const token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY)
 
     if (token) {
       api
@@ -68,17 +68,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [])
 
-  async function signIn(username: string, password: string) {
+  async function signIn(loginType: string, username: string, password: string) {
+    const URL =
+      loginType === 'customer'
+        ? '/clients/authenticate'
+        : '/deliverymen/authenticate'
+
     try {
-      const response = await api.post<SignInResponse>('/clients/authenticate', {
+      const response = await api.post<SignInResponse>(URL, {
         username,
         password,
       })
 
       const { user, token } = response.data
 
-      localStorage.setItem(LOCALSTORAGE_USER_KEY, JSON.stringify(user))
-      localStorage.setItem(LOCALSTORAGE_TOKEN_KEY, token)
+      localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(user))
+      localStorage.setItem(LOCAL_STORAGE_TOKEN_KEY, token)
 
       setCurrentUser({ ...user })
 
