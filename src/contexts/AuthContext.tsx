@@ -12,6 +12,7 @@ import { useSnackbar } from './snackbar'
 
 const LOCAL_STORAGE_USER_KEY = 'ignitedelivery.user'
 const LOCAL_STORAGE_TOKEN_KEY = 'ignitedelivery.token'
+const LOCAL_STORAGE_LOGIN_TYPE_KEY = 'ignitedelivery.logintype'
 
 interface User {
   id: string
@@ -28,6 +29,7 @@ type SignInResponse = {
 interface AuthContextData {
   user: User | undefined
   signIn: (loginType: string, username: string, password: string) => void
+  signOut: () => void
   isAuthenticated: boolean
 }
 
@@ -54,13 +56,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const token = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY)
 
     if (token) {
+      api.defaults.headers['Authorization'] = `Bearer ${token}`
+
+      const loginType = localStorage.getItem(LOCAL_STORAGE_LOGIN_TYPE_KEY)
+      const URL = loginType === 'customer' ? '/clients/me' : '/deliverymen/me'
+
       api
-        .get('me')
+        .get(URL)
         .then((response) => {
-          const { user } = response.data
+          const user = response.data
 
           setCurrentUser({ ...user })
-          api.defaults.headers['Authorization'] = `Bearer ${token}`
         })
         .catch(() => {
           signOut()
@@ -84,6 +90,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(user))
       localStorage.setItem(LOCAL_STORAGE_TOKEN_KEY, token)
+      localStorage.setItem(LOCAL_STORAGE_LOGIN_TYPE_KEY, loginType)
 
       setCurrentUser({ ...user })
 
@@ -103,7 +110,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   return (
     <AuthContext.Provider
-      value={{ user: currentUser, signIn, isAuthenticated }}
+      value={{ user: currentUser, signIn, isAuthenticated, signOut }}
     >
       {children}
     </AuthContext.Provider>
