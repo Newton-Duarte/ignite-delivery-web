@@ -29,6 +29,13 @@ type SignInResponse = {
 interface AuthContextData {
   user: User | undefined
   signIn: (loginType: string, username: string, password: string) => void
+  signUp: (
+    loginType: string,
+    name: string,
+    username: string,
+    password: string,
+    address?: string,
+  ) => void
   signOut: () => void
   isAuthenticated: boolean
 }
@@ -103,6 +110,37 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  async function signUp(
+    loginType: string,
+    name: string,
+    username: string,
+    password: string,
+    address?: string,
+  ) {
+    const URL = loginType === 'customer' ? '/clients' : '/deliverymen'
+
+    try {
+      await api.post<User>(URL, {
+        name,
+        username,
+        password,
+        address,
+      })
+      showSnackbarMessage(
+        'Cadastro efetuado com sucesso, você já pode efetuar o login',
+      )
+
+      navigate('/login')
+    } catch (error: any) {
+      const message = error?.response?.data?.message
+      const errorMessage =
+        message === 'Deliveryman already exists!'
+          ? 'O Usuário informado já existe'
+          : 'Ocorreu um erro ao realizar o cadastro'
+      showSnackbarMessage(errorMessage)
+    }
+  }
+
   function signOut() {
     localStorage.clear()
     navigate('/login')
@@ -110,7 +148,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   return (
     <AuthContext.Provider
-      value={{ user: currentUser, signIn, isAuthenticated, signOut }}
+      value={{ user: currentUser, signIn, isAuthenticated, signUp, signOut }}
     >
       {children}
     </AuthContext.Provider>
