@@ -1,107 +1,58 @@
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
 import {
   Paper,
   Typography,
-  FormControl,
-  TextField,
-  InputAdornment,
-  IconButton,
-  Button,
   Container,
+  Avatar,
+  Divider,
   Box,
 } from '@mui/material'
-import VisibilityIcon from '@mui/icons-material/Visibility'
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
-import { useSnackbar } from '../contexts/snackbar'
+import { useAuth } from '../contexts/AuthContext'
 
 export default function Profile() {
-  const [showPassword, setShowPassword] = useState(false)
-
-  const { showSnackbarMessage } = useSnackbar()
-
-  const { register, handleSubmit } = useForm()
-
-  const handleUpdateProfile = (data: any) => {
-    console.log(data)
-    showSnackbarMessage('Sucesso!')
-  }
+  const { user } = useAuth()
 
   return (
     <Container
       maxWidth="xl"
       sx={{
-        height: 'calc(100vh - 64px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        mt: 5,
       }}
     >
       <Paper
         sx={{
           width: {
             xs: '100%',
-            sm: 400,
+            sm: 600,
           },
           p: 3,
         }}
       >
-        <Typography variant="h5" sx={{ mb: 4, textAlign: 'center' }}>
-          Perfil
-        </Typography>
-        <Box
-          component="form"
-          onSubmit={handleSubmit(handleUpdateProfile)}
+        <Avatar
+          alt={user?.name}
           sx={{
-            '& .MuiTextField-root, & .MuiFormGroup-root': { mb: 3 },
+            width: 128,
+            height: 128,
+            fontSize: '2.125rem',
+            margin: '0 auto',
           }}
         >
-          <FormControl fullWidth>
-            <TextField
-              {...register('name')}
-              id="name"
-              type="text"
-              label="Nome"
-            />
-          </FormControl>
-          <FormControl fullWidth>
-            <TextField
-              {...register('email')}
-              id="email"
-              type="email"
-              label="E-mail"
-            />
-          </FormControl>
-          <FormControl fullWidth>
-            <TextField
-              {...register('password')}
-              id="password"
-              type={showPassword ? 'text' : 'password'}
-              label="Senha"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge="end"
-                    >
-                      {showPassword ? (
-                        <VisibilityOffIcon />
-                      ) : (
-                        <VisibilityIcon />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </FormControl>
-          <FormControl fullWidth>
-            <Button type="submit" variant="contained" size="large">
-              Salvar
-            </Button>
-          </FormControl>
+          {user?.name.split(' ')[0][0]}
+          {user?.name.split(' ')[1][0]}
+        </Avatar>
+        <Typography variant="h5" sx={{ mt: 2, mb: 4, textAlign: 'center' }}>
+          {user?.name}
+        </Typography>
+        <Divider />
+        <Box>
+          <Typography variant="h5" sx={{ mt: 4, textAlign: 'center' }}>
+            {user?.deliveries?.length || 0}
+          </Typography>
+          <Typography variant="body2" sx={{ textAlign: 'center' }}>
+            Entregas
+          </Typography>
         </Box>
       </Paper>
     </Container>
