@@ -97,7 +97,11 @@ export default function Login() {
               <Typography variant="h5" sx={{ mb: 4, textAlign: 'center' }}>
                 Login Cliente
               </Typography>
-              <img src={customerSvg} alt="" style={{ maxWidth: '100%' }} />
+              <img
+                src={customerSvg}
+                alt="customer svg"
+                style={{ maxWidth: '100%' }}
+              />
             </Paper>
             <Paper
               sx={{
@@ -116,7 +120,11 @@ export default function Login() {
               <Typography variant="h5" sx={{ mb: 4, textAlign: 'center' }}>
                 Login Entregador
               </Typography>
-              <img src={deliverymanSvg} alt="" style={{ maxWidth: '100%' }} />
+              <img
+                src={deliverymanSvg}
+                alt="deliveryman svg"
+                style={{ maxWidth: '100%' }}
+              />
             </Paper>
           </Stack>
           <Button component={NavLink} to="/sign-up" size="large" sx={{ mt: 5 }}>
