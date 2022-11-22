@@ -1,19 +1,10 @@
-import {
-  Button,
-  Chip,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from '@mui/material'
-import { Box, Container } from '@mui/system'
 import { useEffect, useState } from 'react'
+import { Button, Typography } from '@mui/material'
+import { Box, Container } from '@mui/system'
 import CreateDelivery from '../components/CreateDelivery'
 import ListLoading from '../components/ListLoading'
+import { UserDeliveriesProvider } from '../contexts/UserDeliveriesContext'
+import UserDeliveriesList from '../components/UserDeliveriesList'
 
 export function UserDeliveries() {
   const [loading, setLoading] = useState(true)
@@ -45,46 +36,13 @@ export function UserDeliveries() {
           Nova Entrega
         </Button>
       </Box>
-      <TableContainer
-        component={Paper}
-        sx={{
-          maxHeight: {
-            xs: 640,
-            sm: 740,
-          },
-        }}
-      >
-        {loading ? (
-          <ListLoading />
-        ) : (
-          <Table aria-label="available-deliveries-table" stickyHeader>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: 'bold' }}>Solicitante</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Encomenda</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', width: '25%' }}>
-                  Endereço
-                </TableCell>
-                <TableCell sx={{ fontWeight: 'bold', width: '25%' }}>
-                  Status
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {[...Array(30).keys()].map((n) => (
-                <TableRow key={n}>
-                  <TableCell>John Doe</TableCell>
-                  <TableCell>Coxinha</TableCell>
-                  <TableCell>Rua Ali Perto, 123 - Bairro Cidade/ST</TableCell>
-                  <TableCell>
-                    <Chip label="Entregue" color="success" />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
-      </TableContainer>
+      {loading ? (
+        <ListLoading />
+      ) : (
+        <UserDeliveriesProvider>
+          <UserDeliveriesList />
+        </UserDeliveriesProvider>
+      )}
     </Container>
   )
 }
