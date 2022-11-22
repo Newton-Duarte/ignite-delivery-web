@@ -74,10 +74,10 @@ export function Header() {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Meu perfil">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar
-                    alt="Newton Duarte"
-                    src="/static/images/avatar/2.jpg"
-                  />
+                  <Avatar alt={user.name}>
+                    {user?.name.split(' ')[0][0]}
+                    {user?.name.split(' ')[1][0]}
+                  </Avatar>
                 </IconButton>
               </Tooltip>
               <Menu
@@ -102,7 +102,7 @@ export function Header() {
                   onClick={handleCloseUserMenu}
                   sx={{ py: 1.5 }}
                 >
-                  <Typography textAlign="center">Profile</Typography>
+                  <Typography textAlign="center">Perfil</Typography>
                 </MenuItem>
                 <MenuItem
                   component={NavLink}
