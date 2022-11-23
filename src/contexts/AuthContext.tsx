@@ -9,6 +9,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 import { api } from '../services/api'
 import { useSnackbar } from './snackbar'
+import { Delivery } from './UserDeliveriesContext'
 
 const LOCAL_STORAGE_USER_KEY = 'ignitedelivery.user'
 const LOCAL_STORAGE_TOKEN_KEY = 'ignitedelivery.token'
@@ -19,6 +20,7 @@ interface User {
   name: string
   username: string
   address?: string
+  deliveries?: Delivery[]
 }
 
 type SignInResponse = {
@@ -38,6 +40,8 @@ interface AuthContextData {
   ) => void
   signOut: () => void
   isAuthenticated: boolean
+  isClient: boolean
+  isDeliveryman: boolean
 }
 
 interface AuthProviderProps {
@@ -55,6 +59,10 @@ export function useAuth() {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [currentUser, setCurrentUser] = useState<User>()
   const isAuthenticated = !!currentUser
+  const isClient =
+    localStorage.getItem(LOCAL_STORAGE_LOGIN_TYPE_KEY) === 'customer'
+  const isDeliveryman =
+    localStorage.getItem(LOCAL_STORAGE_LOGIN_TYPE_KEY) === 'deliveryman'
 
   const navigate = useNavigate()
   const { showSnackbarMessage } = useSnackbar()
@@ -149,7 +157,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   return (
     <AuthContext.Provider
-      value={{ user: currentUser, signIn, isAuthenticated, signUp, signOut }}
+      value={{
+        user: currentUser,
+        signIn,
+        isAuthenticated,
+        isClient,
+        isDeliveryman,
+        signUp,
+        signOut,
+      }}
     >
       {children}
     </AuthContext.Provider>
