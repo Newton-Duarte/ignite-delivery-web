@@ -5,30 +5,16 @@ import {
   TableCell,
   TableBody,
   Skeleton,
+  TableContainer,
+  Paper,
 } from '@mui/material'
 
 export default function ListLoading() {
   return (
-    <Table aria-label="available-deliveries-table" stickyHeader>
-      <TableHead>
-        <TableRow>
-          <TableCell>
-            <Skeleton />
-          </TableCell>
-          <TableCell>
-            <Skeleton />
-          </TableCell>
-          <TableCell>
-            <Skeleton />
-          </TableCell>
-          <TableCell>
-            <Skeleton />
-          </TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {[...Array(10).keys()].map((n) => (
-          <TableRow key={n}>
+    <TableContainer component={Paper}>
+      <Table aria-label="available-deliveries-table" stickyHeader>
+        <TableHead>
+          <TableRow>
             <TableCell>
               <Skeleton />
             </TableCell>
@@ -42,8 +28,26 @@ export default function ListLoading() {
               <Skeleton />
             </TableCell>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHead>
+        <TableBody>
+          {[...Array(10).keys()].map((n) => (
+            <TableRow key={n}>
+              <TableCell>
+                <Skeleton />
+              </TableCell>
+              <TableCell>
+                <Skeleton />
+              </TableCell>
+              <TableCell>
+                <Skeleton />
+              </TableCell>
+              <TableCell>
+                <Skeleton />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   )
 }
