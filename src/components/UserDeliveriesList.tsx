@@ -11,15 +11,20 @@ import {
 } from '@mui/material'
 import { useUserDeliveries } from '../contexts/UserDeliveriesContext'
 import noDataSvg from '../assets/undraw_no_data.svg'
+import ListLoading from './ListLoading'
+import { useAuth } from '../contexts/AuthContext'
+import { formatDate } from '../utils/formatDate'
 
 export default function UserDeliveriesList() {
-  const { deliveries } = useUserDeliveries()
+  const { deliveries, loading } = useUserDeliveries()
+  const { isClient, isDeliveryman } = useAuth()
 
   return (
     <>
-      {deliveries?.length ? (
+      {loading ? (
+        <ListLoading />
+      ) : deliveries?.length ? (
         <TableContainer
-          component={Paper}
           sx={{
             maxHeight: {
               xs: 640,
@@ -30,25 +35,39 @@ export default function UserDeliveriesList() {
           <Table aria-label="available-deliveries-table" stickyHeader>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontWeight: 'bold' }}>Solicitante</TableCell>
+                {isDeliveryman && (
+                  <TableCell sx={{ fontWeight: 'bold' }}>Solicitante</TableCell>
+                )}
                 <TableCell sx={{ fontWeight: 'bold' }}>Encomenda</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', width: '25%' }}>
-                  Endereço
-                </TableCell>
-                <TableCell sx={{ fontWeight: 'bold', width: '25%' }}>
-                  Status
-                </TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Endereço</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Entregue em</TableCell>
+                {isClient && (
+                  <TableCell sx={{ fontWeight: 'bold' }}>
+                    Entregue por
+                  </TableCell>
+                )}
               </TableRow>
             </TableHead>
             <TableBody>
               {deliveries.map((delivery) => (
                 <TableRow key={delivery.id}>
-                  <TableCell>{delivery.client}</TableCell>
+                  {isDeliveryman && (
+                    <TableCell>{delivery.client.name}</TableCell>
+                  )}
                   <TableCell>{delivery.item_name}</TableCell>
                   <TableCell>{delivery.address}</TableCell>
                   <TableCell>
-                    <Chip label="Entregue" color="success" />
+                    {delivery.end_at ? (
+                      <Chip label="Entregue" color="success" />
+                    ) : (
+                      <Chip label="Pendente" color="warning" />
+                    )}
                   </TableCell>
+                  <TableCell>{formatDate(delivery.end_at)}</TableCell>
+                  {isClient && (
+                    <TableCell>{delivery.deliveryman?.name}</TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>
