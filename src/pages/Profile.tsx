@@ -6,7 +6,9 @@ import {
   Divider,
   Box,
 } from '@mui/material'
+import UserDeliveriesList from '../components/UserDeliveriesList'
 import { useAuth } from '../contexts/AuthContext'
+import { UserDeliveriesProvider } from '../contexts/UserDeliveriesContext'
 
 export default function Profile() {
   const { user } = useAuth()
@@ -16,9 +18,10 @@ export default function Profile() {
       maxWidth="xl"
       sx={{
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        mt: 5,
+        my: 5,
       }}
     >
       <Paper
@@ -54,6 +57,19 @@ export default function Profile() {
             Entregas
           </Typography>
         </Box>
+      </Paper>
+      <Paper
+        sx={{
+          width: {
+            xs: '100%',
+            sm: 800,
+          },
+          mt: 3,
+        }}
+      >
+        <UserDeliveriesProvider>
+          <UserDeliveriesList />
+        </UserDeliveriesProvider>
       </Paper>
     </Container>
   )
