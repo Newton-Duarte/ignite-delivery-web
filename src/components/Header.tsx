@@ -104,14 +104,6 @@ export function Header() {
                 >
                   <Typography textAlign="center">Perfil</Typography>
                 </MenuItem>
-                <MenuItem
-                  component={NavLink}
-                  to="/user/deliveries"
-                  onClick={handleCloseUserMenu}
-                  sx={{ py: 1.5 }}
-                >
-                  <Typography textAlign="center">Minhas Entregas</Typography>
-                </MenuItem>
                 <MenuItem onClick={handleLogout} sx={{ py: 1.5 }}>
                   <Typography textAlign="center">Sair</Typography>
                 </MenuItem>
