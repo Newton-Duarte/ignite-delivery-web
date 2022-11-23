@@ -1,41 +1,42 @@
-import { Paper, TableContainer, Typography } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import { Box, Container } from '@mui/system'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import CreateDelivery from '../components/CreateDelivery'
 import DeliveriesList from '../components/DeliveriesList'
-import ListLoading from '../components/ListLoading'
+import { useAuth } from '../contexts/AuthContext'
 import { DeliveriesProvider } from '../contexts/DeliveriesContext'
 
 export function Home() {
-  const [loading, setLoading] = useState(true)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
-  useEffect(() => {
-    setTimeout(() => setLoading(false), 800)
-  }, [])
+  const { isClient } = useAuth()
 
   return (
     <Container maxWidth="xl" sx={{ my: 5 }}>
-      <Box>
-        <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3 }}>
-          Entregas disponíveis
-        </Typography>
-      </Box>
-      <TableContainer
-        component={Paper}
+      <Box
         sx={{
-          maxHeight: {
-            xs: 640,
-            sm: 740,
-          },
+          mb: 3,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}
       >
-        {loading ? (
-          <ListLoading />
-        ) : (
-          <DeliveriesProvider>
-            <DeliveriesList />
-          </DeliveriesProvider>
+        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+          Entregas disponíveis
+        </Typography>
+        {isClient && (
+          <Button variant="contained" onClick={() => setIsModalOpen(true)}>
+            Nova Entrega
+          </Button>
         )}
-      </TableContainer>
+      </Box>
+      <DeliveriesProvider>
+        <DeliveriesList />
+        <CreateDelivery
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
+      </DeliveriesProvider>
     </Container>
   )
 }
