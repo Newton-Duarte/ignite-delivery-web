@@ -28,7 +28,7 @@ const signUpFormValidationSchema = zod.object({
   name: zod.string().min(2, 'Informe o nome'),
   address: zod.string().optional(),
   username: zod.string().min(2, 'Informe o usuário'),
-  password: zod.string().min(6, 'Informe a senha'),
+  password: zod.string().min(6, 'Informe a senha (Mínimo de 6 caracteres)'),
 })
 
 type SignUpFormData = zod.infer<typeof signUpFormValidationSchema>
