@@ -35,9 +35,19 @@ export interface Delivery {
   end_at?: string
 }
 
+interface FetchUserDeliveriesProps {
+  page: number
+}
+
+interface DeliveriesData {
+  data: Delivery[]
+  total: number
+}
+
 interface UserDeliveriesContextData {
-  deliveries: Delivery[]
+  deliveries: DeliveriesData
   loading: boolean
+  fetchUserDeliveries: (data: FetchUserDeliveriesProps) => void
 }
 
 const LOCAL_STORAGE_LOGIN_TYPE_KEY = 'ignitedelivery.logintype'
@@ -81,8 +91,40 @@ export function UserDeliveriesProvider({
       })
   }, [isAuthenticated])
 
+  // TODO: Need to paginate backend response
+  function fetchUserDeliveries({ page = 1 }: FetchUserDeliveriesProps) {
+    const loginType = localStorage.getItem(LOCAL_STORAGE_LOGIN_TYPE_KEY)
+    const URL =
+      loginType === 'customer'
+        ? '/clients/deliveries'
+        : '/deliverymen/deliveries'
+
+    api
+      .get(URL, {
+        params: {
+          page,
+          per_page: 5,
+        },
+      })
+      .then((response) => {
+        setUserDeliveries(response.data)
+        setLoading(false)
+      })
+      .catch((error) => {
+        console.log(error)
+        showSnackbarMessage('Erro ao listar entregas do usuário')
+        setLoading(false)
+      })
+  }
+
   return (
-    <UserDeliveriesContext.Provider value={{ deliveries, loading }}>
+    <UserDeliveriesContext.Provider
+      value={{
+        deliveries: { data: deliveries, total: 10 },
+        loading,
+        fetchUserDeliveries,
+      }}
+    >
       {children}
     </UserDeliveriesContext.Provider>
   )
