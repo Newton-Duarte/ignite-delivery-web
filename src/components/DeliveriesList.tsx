@@ -9,6 +9,7 @@ import {
   Paper,
   Typography,
   TableContainer,
+  Pagination,
 } from '@mui/material'
 import { useDeliveries } from '../contexts/DeliveriesContext'
 import noDataSvg from '../assets/undraw_no_data.svg'
@@ -75,6 +76,16 @@ export default function DeliveriesList() {
               ))}
             </TableBody>
           </Table>
+          <Pagination
+            count={10}
+            color="primary"
+            sx={{
+              '.MuiPagination-ul': {
+                justifyContent: 'center',
+                my: 2,
+              },
+            }}
+          />
         </TableContainer>
       ) : (
         <Paper
