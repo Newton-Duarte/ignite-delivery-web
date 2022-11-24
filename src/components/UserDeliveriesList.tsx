@@ -8,6 +8,7 @@ import {
   Typography,
   Paper,
   TableContainer,
+  Pagination,
 } from '@mui/material'
 import { useUserDeliveries } from '../contexts/UserDeliveriesContext'
 import noDataSvg from '../assets/undraw_no_data.svg'
@@ -23,7 +24,7 @@ export default function UserDeliveriesList() {
     <>
       {loading ? (
         <ListLoading />
-      ) : deliveries?.length ? (
+      ) : deliveries?.total ? (
         <TableContainer
           sx={{
             maxHeight: {
@@ -32,7 +33,7 @@ export default function UserDeliveriesList() {
             },
           }}
         >
-          <Table aria-label="available-deliveries-table" stickyHeader>
+          <Table size="small" aria-label="user-deliveries-table" stickyHeader>
             <TableHead>
               <TableRow>
                 {isDeliveryman && (
@@ -43,14 +44,12 @@ export default function UserDeliveriesList() {
                 <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Entregue em</TableCell>
                 {isClient && (
-                  <TableCell sx={{ fontWeight: 'bold' }}>
-                    Entregue por
-                  </TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Entregador</TableCell>
                 )}
               </TableRow>
             </TableHead>
             <TableBody>
-              {deliveries.map((delivery) => (
+              {deliveries.data.map((delivery) => (
                 <TableRow key={delivery.id}>
                   {isDeliveryman && (
                     <TableCell>{delivery.client.name}</TableCell>
@@ -59,9 +58,11 @@ export default function UserDeliveriesList() {
                   <TableCell>{delivery.address}</TableCell>
                   <TableCell>
                     {delivery.end_at ? (
-                      <Chip label="Entregue" color="success" />
+                      <Chip size="small" label="Entregue" color="success" />
+                    ) : delivery.deliveryman ? (
+                      <Chip size="small" label="Em Trânsito" color="info" />
                     ) : (
-                      <Chip label="Pendente" color="warning" />
+                      <Chip size="small" label="Pendente" color="warning" />
                     )}
                   </TableCell>
                   <TableCell>{formatDate(delivery.end_at)}</TableCell>
@@ -72,6 +73,16 @@ export default function UserDeliveriesList() {
               ))}
             </TableBody>
           </Table>
+          <Pagination
+            count={10}
+            color="primary"
+            sx={{
+              '.MuiPagination-ul': {
+                justifyContent: 'center',
+                my: 2,
+              },
+            }}
+          />
         </TableContainer>
       ) : (
         <Paper
