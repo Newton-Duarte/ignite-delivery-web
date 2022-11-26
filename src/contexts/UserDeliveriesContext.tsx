@@ -1,13 +1,6 @@
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { createContext, ReactNode, useContext, useState } from 'react'
 import { useLoading } from '../hooks/useLoading'
 import { api } from '../services/api'
-import { useAuth } from './AuthContext'
 import { useSnackbar } from './snackbar'
 
 interface UserDeliveriesProviderProps {
@@ -63,16 +56,14 @@ export function useUserDeliveries() {
 export function UserDeliveriesProvider({
   children,
 }: UserDeliveriesProviderProps) {
-  const { isAuthenticated } = useAuth()
   const [deliveries, setUserDeliveries] = useState<DeliveriesData>(
     {} as DeliveriesData,
   )
   const { loading, setLoading } = useLoading(true)
-
   const { showSnackbarMessage } = useSnackbar()
 
-  useEffect(() => {
-    if (!isAuthenticated) return
+  async function fetchUserDeliveries({ page = 1 }: FetchUserDeliveriesProps) {
+    setLoading(true)
 
     const loginType = localStorage.getItem(LOCAL_STORAGE_LOGIN_TYPE_KEY)
     const URL =
@@ -80,43 +71,15 @@ export function UserDeliveriesProvider({
         ? '/clients/deliveries'
         : '/deliverymen/deliveries'
 
-    api
-      .get(URL)
-      .then((response) => {
-        setUserDeliveries(response.data)
-        setLoading(false)
-      })
-      .catch((error) => {
-        console.log(error)
-        showSnackbarMessage('Erro ao listar entregas do usuário')
-        setLoading(false)
-      })
-  }, [isAuthenticated])
-
-  // TODO: Need to paginate backend response
-  function fetchUserDeliveries({ page = 1 }: FetchUserDeliveriesProps) {
-    const loginType = localStorage.getItem(LOCAL_STORAGE_LOGIN_TYPE_KEY)
-    const URL =
-      loginType === 'customer'
-        ? '/clients/deliveries'
-        : '/deliverymen/deliveries'
-
-    api
-      .get(URL, {
-        params: {
-          page,
-          per_page: 5,
-        },
-      })
-      .then((response) => {
-        setUserDeliveries(response.data)
-        setLoading(false)
-      })
-      .catch((error) => {
-        console.log(error)
-        showSnackbarMessage('Erro ao listar entregas do usuário')
-        setLoading(false)
-      })
+    try {
+      const response = await api.get(URL)
+      setUserDeliveries(response.data)
+      setLoading(false)
+    } catch (error) {
+      console.log(error)
+      showSnackbarMessage('Erro ao listar entregas do usuário')
+      setLoading(false)
+    }
   }
 
   return (
