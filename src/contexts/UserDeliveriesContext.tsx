@@ -30,6 +30,7 @@ export interface Delivery {
 
 interface FetchUserDeliveriesProps {
   page: number
+  perPage: number
 }
 
 interface DeliveriesData {
@@ -62,7 +63,10 @@ export function UserDeliveriesProvider({
   const { loading, setLoading } = useLoading(true)
   const { showSnackbarMessage } = useSnackbar()
 
-  async function fetchUserDeliveries({ page = 1 }: FetchUserDeliveriesProps) {
+  async function fetchUserDeliveries({
+    page = 1,
+    perPage = 5,
+  }: FetchUserDeliveriesProps) {
     setLoading(true)
 
     const loginType = localStorage.getItem(LOCAL_STORAGE_LOGIN_TYPE_KEY)
@@ -72,7 +76,12 @@ export function UserDeliveriesProvider({
         : '/deliverymen/deliveries'
 
     try {
-      const response = await api.get(URL)
+      const response = await api.get(URL, {
+        params: {
+          page,
+          per_page: perPage,
+        },
+      })
       setUserDeliveries(response.data)
       setLoading(false)
     } catch (error) {
