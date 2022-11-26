@@ -64,7 +64,9 @@ export function UserDeliveriesProvider({
   children,
 }: UserDeliveriesProviderProps) {
   const { isAuthenticated } = useAuth()
-  const [deliveries, setUserDeliveries] = useState<Delivery[]>([])
+  const [deliveries, setUserDeliveries] = useState<DeliveriesData>(
+    {} as DeliveriesData,
+  )
   const { loading, setLoading } = useLoading(true)
 
   const { showSnackbarMessage } = useSnackbar()
@@ -120,7 +122,7 @@ export function UserDeliveriesProvider({
   return (
     <UserDeliveriesContext.Provider
       value={{
-        deliveries: { data: deliveries, total: 10 },
+        deliveries,
         loading,
         fetchUserDeliveries,
       }}
