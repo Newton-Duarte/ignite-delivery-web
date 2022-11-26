@@ -7,11 +7,21 @@ import { useAuth } from '../contexts/AuthContext'
 import { useDeliveries } from '../contexts/DeliveriesContext'
 import noDataSvg from '../assets/undraw_no_data.svg'
 import { useSearchParams } from 'react-router-dom'
+import ConfirmDialog from '../components/ConfirmDialog'
+import { Delivery } from '../contexts/UserDeliveriesContext'
 
 export function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false)
+  const [toDelivery, setToDelivery] = useState<Delivery | undefined>()
 
-  const { fetchDeliveries, deliveries, loading } = useDeliveries()
+  const {
+    fetchDeliveries,
+    deliveries,
+    loading,
+    updateDelivery,
+    loadingCreateDelivery,
+  } = useDeliveries()
 
   const { isClient } = useAuth()
 
@@ -35,6 +45,19 @@ export function Home() {
 
   function handleChangePerPage(newPerPage: number) {
     setSearchParams({ page: '1', per_page: String(newPerPage) })
+  }
+
+  function handleMakeDelivery(delivery: Delivery) {
+    setToDelivery(delivery)
+    setIsConfirmDialogOpen(true)
+  }
+
+  function handleConfirmTakeDelivery() {
+    updateDelivery(toDelivery?.id as string, () => {
+      setToDelivery(undefined)
+      setIsConfirmDialogOpen(false)
+      fetchDeliveries({ page, perPage })
+    })
   }
 
   return (
@@ -66,6 +89,7 @@ export function Home() {
           perPage={perPage}
           onChangePage={handleChangePage}
           onChangePerPage={handleChangePerPage}
+          onMakeDelivery={handleMakeDelivery}
         />
       ) : (
         <Paper
@@ -87,6 +111,16 @@ export function Home() {
       <CreateDelivery
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+      />
+      <ConfirmDialog
+        isOpen={isConfirmDialogOpen}
+        onClose={() => {
+          setIsConfirmDialogOpen(false)
+          setToDelivery(undefined)
+        }}
+        delivery={toDelivery}
+        onConfirm={handleConfirmTakeDelivery}
+        loading={loadingCreateDelivery}
       />
     </Container>
   )
