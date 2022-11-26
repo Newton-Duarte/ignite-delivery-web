@@ -33,11 +33,21 @@ interface DeliveryFormData {
   address: string
 }
 
+interface DeliveriesData {
+  data: Delivery[]
+  total: number
+}
+
+interface FetchDeliveriesProps {
+  page: number
+  perPage: number
+}
+
 interface DeliveriesContextData {
-  deliveries: Delivery[]
+  deliveries: DeliveriesData
   loading: boolean
   loadingCreateDelivery: boolean
-  fetchDeliveries: () => void
+  fetchDeliveries: ({ page, perPage }: FetchDeliveriesProps) => void
   createDelivery: (data: DeliveryFormData, onSuccess: () => void) => void
 }
 
@@ -50,7 +60,9 @@ export function useDeliveries() {
 }
 
 export function DeliveriesProvider({ children }: DeliveriesProviderProps) {
-  const [deliveries, setDeliveries] = useState<Delivery[]>([])
+  const [deliveries, setDeliveries] = useState<DeliveriesData>(
+    {} as DeliveriesData,
+  )
   const { loading, setLoading } = useLoading(false)
   const {
     loading: loadingCreateDelivery,
@@ -59,11 +71,16 @@ export function DeliveriesProvider({ children }: DeliveriesProviderProps) {
 
   const { showSnackbarMessage } = useSnackbar()
 
-  async function fetchDeliveries() {
+  async function fetchDeliveries({ page, perPage }: FetchDeliveriesProps) {
     setLoading(true)
 
     try {
-      const response = await api.get('/deliveries')
+      const response = await api.get('/deliveries', {
+        params: {
+          page: page <= 0 ? 1 : page,
+          per_page: perPage,
+        },
+      })
       setDeliveries(response.data)
       setLoading(false)
     } catch (error) {
@@ -79,7 +96,10 @@ export function DeliveriesProvider({ children }: DeliveriesProviderProps) {
     try {
       const response = await api.post('/deliveries', data)
 
-      setDeliveries([...deliveries, response.data])
+      setDeliveries({
+        ...deliveries,
+        data: [...deliveries.data, { ...response.data }],
+      })
       showSnackbarMessage('Entrega adicionada com sucesso!')
       setLoadingCreateDelivery(false)
       onSuccess()
