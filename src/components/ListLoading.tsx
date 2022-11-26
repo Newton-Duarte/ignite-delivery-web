@@ -9,7 +9,11 @@ import {
   Paper,
 } from '@mui/material'
 
-export default function ListLoading() {
+interface ListLoadingProps {
+  rows?: number
+}
+
+export default function ListLoading({ rows = 10 }: ListLoadingProps) {
   return (
     <TableContainer component={Paper}>
       <Table aria-label="available-deliveries-table" stickyHeader>
@@ -30,7 +34,7 @@ export default function ListLoading() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {[...Array(10).keys()].map((n) => (
+          {[...Array(rows).keys()].map((n) => (
             <TableRow key={n}>
               <TableCell>
                 <Skeleton />
