@@ -27,8 +27,8 @@ export default function UserDeliveriesList() {
   useEffect(() => {
     if (!isAuthenticated) return
 
-    fetchUserDeliveries({ page })
-  }, [isAuthenticated, page])
+    fetchUserDeliveries({ page, perPage })
+  }, [isAuthenticated, page, perPage])
 
   return (
     <>
