@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import {
   Table,
   TableHead,
@@ -8,7 +9,8 @@ import {
   Typography,
   Paper,
   TableContainer,
-  Pagination,
+  TableFooter,
+  TablePagination,
 } from '@mui/material'
 import { useUserDeliveries } from '../contexts/UserDeliveriesContext'
 import noDataSvg from '../assets/undraw_no_data.svg'
@@ -17,13 +19,21 @@ import { useAuth } from '../contexts/AuthContext'
 import { formatDate } from '../utils/formatDate'
 
 export default function UserDeliveriesList() {
-  const { deliveries, loading } = useUserDeliveries()
-  const { isClient, isDeliveryman } = useAuth()
+  const [page, setPage] = useState(1)
+  const [perPage, setPerPage] = useState(5)
+  const { fetchUserDeliveries, deliveries, loading } = useUserDeliveries()
+  const { isClient, isDeliveryman, isAuthenticated } = useAuth()
+
+  useEffect(() => {
+    if (!isAuthenticated) return
+
+    fetchUserDeliveries({ page })
+  }, [isAuthenticated, page])
 
   return (
     <>
       {loading ? (
-        <ListLoading />
+        <ListLoading rows={5} />
       ) : deliveries?.total ? (
         <TableContainer
           sx={{
@@ -72,17 +82,27 @@ export default function UserDeliveriesList() {
                 </TableRow>
               ))}
             </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25]}
+                  colSpan={5}
+                  count={deliveries.total}
+                  rowsPerPage={perPage}
+                  page={page - 1}
+                  SelectProps={{
+                    inputProps: {
+                      'aria-label': 'rows per page',
+                    },
+                  }}
+                  onPageChange={(_, newPage) => setPage(newPage + 1)}
+                  onRowsPerPageChange={({ target }) =>
+                    setPerPage(Number(target.value))
+                  }
+                />
+              </TableRow>
+            </TableFooter>
           </Table>
-          <Pagination
-            count={10}
-            color="primary"
-            sx={{
-              '.MuiPagination-ul': {
-                justifyContent: 'center',
-                my: 2,
-              },
-            }}
-          />
         </TableContainer>
       ) : (
         <Paper
