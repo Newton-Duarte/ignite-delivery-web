@@ -20,6 +20,7 @@ interface DeliveriesListProps {
   perPage: number
   onChangePage: (newPage: number) => void
   onChangePerPage: (newPerPage: number) => void
+  onMakeDelivery: (delivery: Delivery) => void
 }
 
 export default function DeliveriesList({
@@ -29,6 +30,7 @@ export default function DeliveriesList({
   perPage,
   onChangePage,
   onChangePerPage,
+  onMakeDelivery,
 }: DeliveriesListProps) {
   const { isDeliveryman } = useAuth()
 
@@ -73,7 +75,12 @@ export default function DeliveriesList({
               </TableCell>
               {isDeliveryman && (
                 <TableCell>
-                  <Button variant="contained">Realizar Entrega</Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => onMakeDelivery(delivery)}
+                  >
+                    Realizar Entrega
+                  </Button>
                 </TableCell>
               )}
             </TableRow>
