@@ -16,7 +16,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 export default function Login() {
   const [loginType, setLoginType] = useState('')
-  const { signIn } = useAuth()
+  const { signIn, loading } = useAuth()
 
   const handleLogin = (data: any) => {
     signIn(loginType, data.username, data.password)
@@ -65,7 +65,7 @@ export default function Login() {
               Login {loginType === 'customer' ? 'Cliente' : 'Entregador'}
             </Typography>
           </Stack>
-          <LoginForm onSubmit={handleLogin} />
+          <LoginForm loading={loading} onSubmit={handleLogin} />
         </Paper>
       ) : (
         <>

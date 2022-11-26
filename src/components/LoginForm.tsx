@@ -14,10 +14,11 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 
 interface LoginFormProps {
+  loading: boolean
   onSubmit: (data: any) => void
 }
 
-export default function LoginForm({ onSubmit }: LoginFormProps) {
+export default function LoginForm({ loading, onSubmit }: LoginFormProps) {
   const [showPassword, setShowPassword] = useState(false)
   const { register, handleSubmit } = useForm()
 
@@ -59,11 +60,21 @@ export default function LoginForm({ onSubmit }: LoginFormProps) {
         />
       </FormControl>
       <FormControl fullWidth>
-        <Button type="submit" variant="contained" size="large">
+        <Button
+          type="submit"
+          variant="contained"
+          size="large"
+          disabled={loading}
+        >
           Entrar
         </Button>
         <Divider sx={{ my: 3 }} />
-        <Button component={NavLink} to="/sign-up" size="large">
+        <Button
+          component={NavLink}
+          to="/sign-up"
+          size="large"
+          disabled={loading}
+        >
           Criar uma conta
         </Button>
       </FormControl>

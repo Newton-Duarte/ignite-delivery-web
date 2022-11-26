@@ -7,6 +7,7 @@ import {
   useState,
 } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useLoading } from '../hooks/useLoading'
 import { api } from '../services/api'
 import { useSnackbar } from './snackbar'
 import { Delivery } from './UserDeliveriesContext'
@@ -42,6 +43,7 @@ interface AuthContextData {
   isAuthenticated: boolean
   isClient: boolean
   isDeliveryman: boolean
+  loading: boolean
 }
 
 interface AuthProviderProps {
@@ -57,6 +59,7 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
+  const { loading, setLoading } = useLoading(true)
   const [currentUser, setCurrentUser] = useState<User>()
   const isAuthenticated = !!currentUser
   const isClient =
@@ -87,9 +90,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
           signOut()
         })
     }
+
+    setLoading(false)
   }, [])
 
   async function signIn(loginType: string, username: string, password: string) {
+    setLoading(true)
+
     const URL =
       loginType === 'customer'
         ? '/clients/authenticate'
@@ -112,9 +119,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
       api.defaults.headers['Authorization'] = `Bearer ${token}`
       showSnackbarMessage('Login efetuado com sucesso')
 
+      setLoading(false)
       navigate('/')
     } catch (error) {
       showSnackbarMessage('Usuário ou senha inválidos')
+      setLoading(false)
     }
   }
 
@@ -125,6 +134,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     password: string,
     address?: string,
   ) {
+    setLoading(true)
+
     const URL = loginType === 'customer' ? '/clients' : '/deliverymen'
 
     try {
@@ -138,6 +149,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         'Cadastro efetuado com sucesso, você já pode efetuar o login',
       )
 
+      setLoading(false)
       navigate('/login')
     } catch (error: any) {
       const message = error?.response?.data?.message
@@ -146,6 +158,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           ? 'O Usuário informado já existe'
           : 'Ocorreu um erro ao realizar o cadastro'
       showSnackbarMessage(errorMessage)
+      setLoading(false)
     }
   }
 
@@ -165,6 +178,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         isDeliveryman,
         signUp,
         signOut,
+        loading,
       }}
     >
       {children}
