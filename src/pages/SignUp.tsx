@@ -36,7 +36,7 @@ type SignUpFormData = zod.infer<typeof signUpFormValidationSchema>
 export default function SignUp() {
   const [loginType, setLoginType] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const { signUp } = useAuth()
+  const { loading, signUp } = useAuth()
 
   const { register, handleSubmit, formState } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpFormValidationSchema),
@@ -165,7 +165,12 @@ export default function SignUp() {
               />
             </FormControl>
             <FormControl fullWidth>
-              <Button type="submit" variant="contained" size="large">
+              <Button
+                type="submit"
+                variant="contained"
+                size="large"
+                disabled={loading}
+              >
                 Salvar
               </Button>
               <Divider sx={{ my: 3 }} />
@@ -174,6 +179,7 @@ export default function SignUp() {
                 to="/login"
                 size="large"
                 startIcon={<ChevronLeftIcon />}
+                disabled={loading}
               >
                 Voltar para o login
               </Button>
