@@ -49,6 +49,7 @@ interface DeliveriesContextData {
   loadingCreateDelivery: boolean
   fetchDeliveries: ({ page, perPage }: FetchDeliveriesProps) => void
   createDelivery: (data: DeliveryFormData, onSuccess: () => void) => void
+  updateDelivery: (deliveryId: string, onSuccess: () => void) => void
 }
 
 const DeliveriesContext = createContext({} as DeliveriesContextData)
@@ -110,6 +111,21 @@ export function DeliveriesProvider({ children }: DeliveriesProviderProps) {
     }
   }
 
+  async function updateDelivery(deliveryId: string, onSuccess: () => void) {
+    setLoadingCreateDelivery(true)
+
+    try {
+      await api.put(`/deliveries/${deliveryId}`)
+      showSnackbarMessage('Entrega atualizada com sucesso!')
+      setLoadingCreateDelivery(false)
+      onSuccess()
+    } catch (error) {
+      console.log(error)
+      showSnackbarMessage('Ocorreu um erro ao atualizar a entrega.')
+      setLoadingCreateDelivery(false)
+    }
+  }
+
   return (
     <DeliveriesContext.Provider
       value={{
@@ -118,6 +134,7 @@ export function DeliveriesProvider({ children }: DeliveriesProviderProps) {
         loadingCreateDelivery,
         fetchDeliveries,
         createDelivery,
+        updateDelivery,
       }}
     >
       {children}
