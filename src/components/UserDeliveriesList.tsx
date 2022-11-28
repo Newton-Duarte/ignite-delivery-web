@@ -11,6 +11,7 @@ import {
   TableContainer,
   TableFooter,
   TablePagination,
+  Button,
 } from '@mui/material'
 import { useUserDeliveries } from '../contexts/UserDeliveriesContext'
 import noDataSvg from '../assets/undraw_no_data.svg'
@@ -21,7 +22,8 @@ import { formatDate } from '../utils/formatDate'
 export default function UserDeliveriesList() {
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(5)
-  const { fetchUserDeliveries, deliveries, loading } = useUserDeliveries()
+  const { fetchUserDeliveries, deliveries, loading, confirmDelivery } =
+    useUserDeliveries()
   const { isClient, isDeliveryman, isAuthenticated } = useAuth()
 
   useEffect(() => {
@@ -29,6 +31,10 @@ export default function UserDeliveriesList() {
 
     fetchUserDeliveries({ page, perPage })
   }, [isAuthenticated, page, perPage])
+
+  function handleConfirmDelivery(deliveryId: string) {
+    confirmDelivery(deliveryId, () => fetchUserDeliveries({ page, perPage }))
+  }
 
   return (
     <>
@@ -75,7 +81,20 @@ export default function UserDeliveriesList() {
                       <Chip size="small" label="Pendente" color="warning" />
                     )}
                   </TableCell>
-                  <TableCell>{formatDate(delivery.end_at)}</TableCell>
+                  <TableCell>
+                    {isDeliveryman &&
+                    delivery.deliveryman &&
+                    !delivery.end_at ? (
+                      <Button
+                        size="small"
+                        onClick={() => handleConfirmDelivery(delivery.id)}
+                      >
+                        Confirmar entrega
+                      </Button>
+                    ) : (
+                      formatDate(delivery.end_at)
+                    )}
+                  </TableCell>
                   {isClient && (
                     <TableCell>{delivery.deliveryman?.name}</TableCell>
                   )}
