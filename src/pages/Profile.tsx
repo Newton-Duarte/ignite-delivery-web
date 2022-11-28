@@ -72,7 +72,7 @@ export default function Profile() {
         sx={{
           width: {
             xs: '100%',
-            sm: 800,
+            sm: 900,
           },
           mt: 3,
         }}
