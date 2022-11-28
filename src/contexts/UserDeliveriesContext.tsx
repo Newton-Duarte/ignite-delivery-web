@@ -42,6 +42,7 @@ interface UserDeliveriesContextData {
   deliveries: DeliveriesData
   loading: boolean
   fetchUserDeliveries: (data: FetchUserDeliveriesProps) => void
+  confirmDelivery: (deliveryId: string, onSuccess: () => void) => void
 }
 
 const LOCAL_STORAGE_LOGIN_TYPE_KEY = 'ignitedelivery.logintype'
@@ -91,12 +92,28 @@ export function UserDeliveriesProvider({
     }
   }
 
+  async function confirmDelivery(deliveryId: string, onSuccess: () => void) {
+    setLoading(true)
+
+    try {
+      await api.patch(`/deliveries/${deliveryId}`)
+      showSnackbarMessage('Entrega confirmada com sucesso')
+      setLoading(false)
+      onSuccess()
+    } catch (error) {
+      console.log(error)
+      showSnackbarMessage('Erro ao confirmar entrega')
+      setLoading(false)
+    }
+  }
+
   return (
     <UserDeliveriesContext.Provider
       value={{
         deliveries,
         loading,
         fetchUserDeliveries,
+        confirmDelivery,
       }}
     >
       {children}
