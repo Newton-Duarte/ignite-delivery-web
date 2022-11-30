@@ -23,6 +23,8 @@ export function Profile() {
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(5)
   const [search, setSearch] = useState('')
+  const [sortBy, setSortBy] = useState('end_at')
+  const [sort, setSort] = useState<'asc' | 'desc'>('desc')
   const { fetchUserDeliveries, deliveries, loading, confirmDelivery } =
     useUserDeliveries()
   const { user, isClient, isAuthenticated } = useAuth()
@@ -30,12 +32,12 @@ export function Profile() {
   useEffect(() => {
     if (!isAuthenticated) return
 
-    fetchUserDeliveries({ page, perPage, search })
-  }, [isAuthenticated, page, perPage, search])
+    fetchUserDeliveries({ page, perPage, search, sortBy, sort })
+  }, [isAuthenticated, page, perPage, search, sortBy, sort])
 
   function handleConfirmDelivery(deliveryId: string) {
     confirmDelivery(deliveryId, () =>
-      fetchUserDeliveries({ page, perPage, search }),
+      fetchUserDeliveries({ page, perPage, search, sortBy, sort }),
     )
   }
 
@@ -51,6 +53,11 @@ export function Profile() {
 
   function handleChangeSearch() {
     setSearch(searchInput?.current?.value as string)
+  }
+
+  function handleSort(newSort: string) {
+    setSortBy(newSort)
+    setSort(newSort === sortBy ? (sort === 'desc' ? 'asc' : 'desc') : 'desc')
   }
 
   return (
@@ -162,9 +169,12 @@ export function Profile() {
             total={deliveries.total}
             page={page}
             perPage={perPage}
+            sortBy={sortBy}
+            sort={sort}
             onChangePage={(newPage) => setPage(newPage)}
             onChangePerPage={(newPerPage) => setPerPage(newPerPage)}
             onConfirmDelivery={handleConfirmDelivery}
+            onSort={handleSort}
           />
         ) : (
           <Box
