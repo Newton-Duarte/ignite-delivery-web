@@ -1,5 +1,16 @@
-import { useEffect, useState } from 'react'
-import { Box, Button, Container, Paper, Typography } from '@mui/material'
+import React, { useEffect, useRef, useState } from 'react'
+import {
+  Box,
+  Button,
+  Container,
+  IconButton,
+  InputAdornment,
+  Paper,
+  TextField,
+  TextFieldProps,
+  Typography,
+} from '@mui/material'
+import SearchIcon from '@mui/icons-material/Search'
 import CreateDelivery from '../components/CreateDelivery'
 import DeliveriesList from '../components/DeliveriesList'
 import ListLoading from '../components/ListLoading'
@@ -15,6 +26,8 @@ export function Home() {
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false)
   const [toDelivery, setToDelivery] = useState<Delivery | undefined>()
 
+  const searchInput = useRef<TextFieldProps>()
+
   const {
     fetchDeliveries,
     deliveries,
@@ -29,22 +42,32 @@ export function Home() {
 
   const page = Number(searchParams.get('page')) || 1
   const perPage = Number(searchParams.get('per_page')) || 5
+  const search = searchParams.get('search')
+    ? String(searchParams.get('search'))
+    : ''
+
+  useEffect(() => {
+    if (searchInput.current) {
+      searchInput.current.value = search
+    }
+  }, [])
 
   useEffect(() => {
     if (loading) return
 
-    fetchDeliveries({ page, perPage })
-  }, [page, perPage])
+    fetchDeliveries({ page, perPage, search })
+  }, [page, perPage, search])
 
   function handleChangePage(newPage: number) {
     setSearchParams({
       per_page: String(perPage),
       page: String(newPage + 1),
+      search,
     })
   }
 
   function handleChangePerPage(newPerPage: number) {
-    setSearchParams({ page: '1', per_page: String(newPerPage) })
+    setSearchParams({ page: '1', per_page: String(newPerPage), search })
   }
 
   function handleMakeDelivery(delivery: Delivery) {
@@ -56,7 +79,21 @@ export function Home() {
     updateDelivery(toDelivery?.id as string, () => {
       setToDelivery(undefined)
       setIsConfirmDialogOpen(false)
-      fetchDeliveries({ page, perPage })
+      fetchDeliveries({ page, perPage, search })
+    })
+  }
+
+  function handleSearchKeyUp(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key !== 'Enter') return
+
+    handleChangeSearch()
+  }
+
+  function handleChangeSearch() {
+    setSearchParams({
+      page: '1',
+      per_page: String(perPage),
+      search: searchInput?.current?.value as string,
     })
   }
 
@@ -73,13 +110,43 @@ export function Home() {
         <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
           Entregas disponíveis
         </Typography>
-        {isClient && (
-          <Button variant="contained" onClick={() => setIsModalOpen(true)}>
-            Nova Entrega
-          </Button>
-        )}
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <TextField
+            variant="standard"
+            label="Pesquisar"
+            inputRef={searchInput}
+            onKeyUp={handleSearchKeyUp}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="search submit"
+                    onClick={handleChangeSearch}
+                    edge="end"
+                  >
+                    <SearchIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          {isClient && (
+            <Button
+              variant="contained"
+              onClick={() => setIsModalOpen(true)}
+              sx={{ ml: 3 }}
+            >
+              Nova Entrega
+            </Button>
+          )}
+        </Box>
       </Box>
-      {!deliveries?.total || loading ? (
+      {!deliveries?.total && loading ? (
         <ListLoading />
       ) : deliveries?.total ? (
         <DeliveriesList
