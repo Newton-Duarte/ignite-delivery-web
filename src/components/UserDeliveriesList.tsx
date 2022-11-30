@@ -9,6 +9,7 @@ import {
   TableFooter,
   TablePagination,
   Button,
+  TableSortLabel,
 } from '@mui/material'
 import { useAuth } from '../contexts/AuthContext'
 import { Delivery } from '../contexts/UserDeliveriesContext'
@@ -19,9 +20,12 @@ interface UserDeliveriesListProps {
   total: number
   page: number
   perPage: number
+  sortBy: string
+  sort: 'desc' | 'asc'
   onChangePage: (newPage: number) => void
   onChangePerPage: (newPerPage: number) => void
   onConfirmDelivery: (deliveryId: string) => void
+  onSort: (sort: string) => void
 }
 
 export default function UserDeliveriesList({
@@ -29,9 +33,12 @@ export default function UserDeliveriesList({
   total,
   page,
   perPage,
+  sortBy,
+  sort,
   onChangePage,
   onChangePerPage,
   onConfirmDelivery,
+  onSort,
 }: UserDeliveriesListProps) {
   const { isDeliveryman, isClient } = useAuth()
 
@@ -48,14 +55,46 @@ export default function UserDeliveriesList({
         <TableHead>
           <TableRow>
             {isDeliveryman && (
-              <TableCell sx={{ fontWeight: 'bold' }}>Solicitante</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>
+                <TableSortLabel
+                  active={sortBy === 'client'}
+                  direction={sortBy === 'client' ? sort : 'asc'}
+                  onClick={() => onSort('client')}
+                >
+                  Solicitante
+                </TableSortLabel>
+              </TableCell>
             )}
-            <TableCell sx={{ fontWeight: 'bold' }}>Encomenda</TableCell>
+            <TableCell sx={{ fontWeight: 'bold' }}>
+              <TableSortLabel
+                active={sortBy === 'item_name'}
+                direction={sortBy === 'item_name' ? sort : 'asc'}
+                onClick={() => onSort('item_name')}
+              >
+                Encomenda
+              </TableSortLabel>
+            </TableCell>
             <TableCell sx={{ fontWeight: 'bold' }}>Endereço</TableCell>
             <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
-            <TableCell sx={{ fontWeight: 'bold' }}>Entregue em</TableCell>
+            <TableCell sx={{ fontWeight: 'bold' }}>
+              <TableSortLabel
+                active={sortBy === 'end_at'}
+                direction={sortBy === 'end_at' ? sort : 'asc'}
+                onClick={() => onSort('end_at')}
+              >
+                Entregue em
+              </TableSortLabel>
+            </TableCell>
             {isClient && (
-              <TableCell sx={{ fontWeight: 'bold' }}>Entregador</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>
+                <TableSortLabel
+                  active={sortBy === 'deliveryman'}
+                  direction={sortBy === 'deliveryman' ? sort : 'asc'}
+                  onClick={() => onSort('deliveryman')}
+                >
+                  Entregador
+                </TableSortLabel>
+              </TableCell>
             )}
           </TableRow>
         </TableHead>
