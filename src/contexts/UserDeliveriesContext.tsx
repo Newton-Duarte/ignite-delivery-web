@@ -31,6 +31,7 @@ export interface Delivery {
 interface FetchUserDeliveriesProps {
   page: number
   perPage: number
+  search: string
 }
 
 interface DeliveriesData {
@@ -67,6 +68,7 @@ export function UserDeliveriesProvider({
   async function fetchUserDeliveries({
     page = 1,
     perPage = 5,
+    search = '',
   }: FetchUserDeliveriesProps) {
     setLoading(true)
 
@@ -81,6 +83,7 @@ export function UserDeliveriesProvider({
         params: {
           page,
           per_page: perPage,
+          search,
         },
       })
       setUserDeliveries(response.data)
