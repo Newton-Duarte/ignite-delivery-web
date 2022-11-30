@@ -32,6 +32,8 @@ interface FetchUserDeliveriesProps {
   page: number
   perPage: number
   search: string
+  sortBy: string
+  sort: 'asc' | 'desc'
 }
 
 interface DeliveriesData {
@@ -69,6 +71,8 @@ export function UserDeliveriesProvider({
     page = 1,
     perPage = 5,
     search = '',
+    sortBy,
+    sort,
   }: FetchUserDeliveriesProps) {
     setLoading(true)
 
@@ -84,6 +88,8 @@ export function UserDeliveriesProvider({
           page,
           per_page: perPage,
           search,
+          sort_by: sortBy,
+          sort,
         },
       })
       setUserDeliveries(response.data)
