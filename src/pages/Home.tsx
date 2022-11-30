@@ -42,6 +42,12 @@ export function Home() {
 
   const page = Number(searchParams.get('page')) || 1
   const perPage = Number(searchParams.get('per_page')) || 5
+  const sort = searchParams.get('sort')
+    ? (String(searchParams.get('sort')) as 'asc' | 'desc')
+    : ('desc' as 'asc' | 'desc')
+  const sortBy = searchParams.get('sort_by')
+    ? String(searchParams.get('sort_by'))
+    : 'created_at'
   const search = searchParams.get('search')
     ? String(searchParams.get('search'))
     : ''
@@ -55,19 +61,27 @@ export function Home() {
   useEffect(() => {
     if (loading) return
 
-    fetchDeliveries({ page, perPage, search })
-  }, [page, perPage, search])
+    fetchDeliveries({ page, perPage, search, sortBy, sort })
+  }, [page, perPage, search, sortBy, sort])
 
   function handleChangePage(newPage: number) {
     setSearchParams({
       per_page: String(perPage),
       page: String(newPage + 1),
+      sort_by: sortBy,
+      sort,
       search,
     })
   }
 
   function handleChangePerPage(newPerPage: number) {
-    setSearchParams({ page: '1', per_page: String(newPerPage), search })
+    setSearchParams({
+      page: '1',
+      per_page: String(newPerPage),
+      sort_by: sortBy,
+      sort,
+      search,
+    })
   }
 
   function handleMakeDelivery(delivery: Delivery) {
@@ -79,7 +93,7 @@ export function Home() {
     updateDelivery(toDelivery?.id as string, () => {
       setToDelivery(undefined)
       setIsConfirmDialogOpen(false)
-      fetchDeliveries({ page, perPage, search })
+      fetchDeliveries({ page, perPage, search, sortBy, sort })
     })
   }
 
@@ -93,6 +107,18 @@ export function Home() {
     setSearchParams({
       page: '1',
       per_page: String(perPage),
+      search: searchInput?.current?.value as string,
+      sort_by: sortBy,
+      sort,
+    })
+  }
+
+  function handleSort(newSort: string) {
+    setSearchParams({
+      page: String(page),
+      per_page: String(perPage),
+      sort_by: newSort,
+      sort: newSort === sortBy ? (sort === 'desc' ? 'asc' : 'desc') : 'desc',
       search: searchInput?.current?.value as string,
     })
   }
@@ -154,9 +180,12 @@ export function Home() {
           total={deliveries.total}
           page={page - 1}
           perPage={perPage}
+          sortBy={sortBy}
+          sort={sort}
           onChangePage={handleChangePage}
           onChangePerPage={handleChangePerPage}
           onMakeDelivery={handleMakeDelivery}
+          onSort={handleSort}
         />
       ) : (
         <Paper
