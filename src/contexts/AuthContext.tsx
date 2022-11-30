@@ -165,7 +165,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   function signOut() {
-    setCurrentUser(undefined)
+    setCurrentUser(null)
     localStorage.clear()
     navigate('/login')
   }
