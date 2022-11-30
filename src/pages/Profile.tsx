@@ -154,7 +154,7 @@ export function Profile() {
             />
           </Box>
         </Box>
-        {!deliveries?.total || loading ? (
+        {!deliveries?.total && loading ? (
           <ListLoading rows={5} />
         ) : deliveries?.total ? (
           <UserDeliveriesList
@@ -167,7 +167,7 @@ export function Profile() {
             onConfirmDelivery={handleConfirmDelivery}
           />
         ) : (
-          <Paper
+          <Box
             sx={{
               width: {
                 xs: '100%',
@@ -185,7 +185,7 @@ export function Profile() {
             <Typography variant="body1" sx={{ mt: 2, textAlign: 'center' }}>
               Nenhuma entrega encontrada
             </Typography>
-          </Paper>
+          </Box>
         )}
       </Paper>
     </Container>
