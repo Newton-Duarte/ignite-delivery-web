@@ -9,6 +9,7 @@ import {
   TableContainer,
   TableFooter,
   TablePagination,
+  TableSortLabel,
 } from '@mui/material'
 import { useAuth } from '../contexts/AuthContext'
 import { Delivery } from '../contexts/UserDeliveriesContext'
@@ -18,9 +19,12 @@ interface DeliveriesListProps {
   total: number
   page: number
   perPage: number
+  sortBy: string
+  sort: 'desc' | 'asc'
   onChangePage: (newPage: number) => void
   onChangePerPage: (newPerPage: number) => void
   onMakeDelivery: (delivery: Delivery) => void
+  onSort: (sort: string) => void
 }
 
 export default function DeliveriesList({
@@ -28,9 +32,12 @@ export default function DeliveriesList({
   total,
   page,
   perPage,
+  sortBy,
+  sort,
   onChangePage,
   onChangePerPage,
   onMakeDelivery,
+  onSort,
 }: DeliveriesListProps) {
   const { isDeliveryman } = useAuth()
 
@@ -47,13 +54,35 @@ export default function DeliveriesList({
       <Table aria-label="available-deliveries-table" stickyHeader>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ fontWeight: 'bold' }}>Solicitante</TableCell>
-            <TableCell sx={{ fontWeight: 'bold' }}>Encomenda</TableCell>
+            <TableCell sx={{ fontWeight: 'bold' }}>
+              <TableSortLabel
+                active={sortBy === 'client'}
+                direction={sortBy === 'client' ? sort : 'asc'}
+                onClick={() => onSort('client')}
+              >
+                Solicitante
+              </TableSortLabel>
+            </TableCell>
+            <TableCell sx={{ fontWeight: 'bold' }}>
+              <TableSortLabel
+                active={sortBy === 'item_name'}
+                direction={sortBy === 'item_name' ? sort : 'asc'}
+                onClick={() => onSort('item_name')}
+              >
+                Encomenda
+              </TableSortLabel>
+            </TableCell>
             <TableCell sx={{ fontWeight: 'bold', width: '25%' }}>
               Endereço
             </TableCell>
             <TableCell sx={{ fontWeight: 'bold', width: '25%' }}>
-              Criado em
+              <TableSortLabel
+                active={sortBy === 'created_at'}
+                direction={sortBy === 'created_at' ? sort : 'asc'}
+                onClick={() => onSort('created_at')}
+              >
+                Criado em
+              </TableSortLabel>
             </TableCell>
             {isDeliveryman && (
               <TableCell sx={{ fontWeight: 'bold', width: '25%' }}>
