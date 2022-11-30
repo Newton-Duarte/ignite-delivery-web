@@ -42,13 +42,21 @@ interface FetchDeliveriesProps {
   page: number
   perPage: number
   search: string
+  sortBy: string
+  sort: 'asc' | 'desc'
 }
 
 interface DeliveriesContextData {
   deliveries: DeliveriesData
   loading: boolean
   loadingCreateDelivery: boolean
-  fetchDeliveries: ({ page, perPage, search }: FetchDeliveriesProps) => void
+  fetchDeliveries: ({
+    page,
+    perPage,
+    search,
+    sortBy,
+    sort,
+  }: FetchDeliveriesProps) => void
   createDelivery: (data: DeliveryFormData, onSuccess: () => void) => void
   updateDelivery: (deliveryId: string, onSuccess: () => void) => void
 }
@@ -77,6 +85,8 @@ export function DeliveriesProvider({ children }: DeliveriesProviderProps) {
     page,
     perPage,
     search,
+    sortBy,
+    sort,
   }: FetchDeliveriesProps) {
     setLoading(true)
 
@@ -86,6 +96,8 @@ export function DeliveriesProvider({ children }: DeliveriesProviderProps) {
           page: page <= 0 ? 1 : page,
           per_page: perPage,
           search,
+          sort_by: sortBy,
+          sort,
         },
       })
       setDeliveries(response.data)
