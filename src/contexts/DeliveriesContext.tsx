@@ -41,13 +41,14 @@ interface DeliveriesData {
 interface FetchDeliveriesProps {
   page: number
   perPage: number
+  search: string
 }
 
 interface DeliveriesContextData {
   deliveries: DeliveriesData
   loading: boolean
   loadingCreateDelivery: boolean
-  fetchDeliveries: ({ page, perPage }: FetchDeliveriesProps) => void
+  fetchDeliveries: ({ page, perPage, search }: FetchDeliveriesProps) => void
   createDelivery: (data: DeliveryFormData, onSuccess: () => void) => void
   updateDelivery: (deliveryId: string, onSuccess: () => void) => void
 }
@@ -72,7 +73,11 @@ export function DeliveriesProvider({ children }: DeliveriesProviderProps) {
 
   const { showSnackbarMessage } = useSnackbar()
 
-  async function fetchDeliveries({ page, perPage }: FetchDeliveriesProps) {
+  async function fetchDeliveries({
+    page,
+    perPage,
+    search,
+  }: FetchDeliveriesProps) {
     setLoading(true)
 
     try {
@@ -80,6 +85,7 @@ export function DeliveriesProvider({ children }: DeliveriesProviderProps) {
         params: {
           page: page <= 0 ? 1 : page,
           per_page: perPage,
+          search,
         },
       })
       setDeliveries(response.data)
