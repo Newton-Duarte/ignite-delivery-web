@@ -30,7 +30,7 @@ type SignInResponse = {
 }
 
 interface AuthContextData {
-  user: User | undefined
+  user: User | null | undefined
   signIn: (loginType: string, username: string, password: string) => void
   signUp: (
     loginType: string,
@@ -60,7 +60,7 @@ export function useAuth() {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const { loading, setLoading } = useLoading(true)
-  const [currentUser, setCurrentUser] = useState<User>()
+  const [currentUser, setCurrentUser] = useState<User | null | undefined>()
   const isAuthenticated = !!currentUser
   const isClient =
     localStorage.getItem(LOCAL_STORAGE_LOGIN_TYPE_KEY) === 'customer'
@@ -89,6 +89,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         .catch(() => {
           signOut()
         })
+    } else {
+      setCurrentUser(null)
     }
 
     setLoading(false)
